@@ -1,0 +1,284 @@
+VLAN Config
+----------------------------------------------------------------
+
+1. Enter Privileged Exec Mode:
+   Switch> enable
+
+2. Enter Global Configuration Mode:
+   Switch# configure terminal
+
+3. Create VLANs:
+   Switch(config)# vlan vlan_id
+
+4. Name VLANs (Optional):
+   Switch(config-vlan)# name VLAN_Name
+
+5. Assign VLANs to Ports:
+   Switch(config)# interface interface_type interface_number
+   Switch(config-if)# switchport mode access
+   Switch(config-if)# switchport access vlan 10
+
+6. Exit Configuration Mode:
+   Switch(config-if)# exit
+   Switch(config)# exit
+
+7. Save Configuration:
+   Switch# copy running-config startup-config
+
+8. Verify Configuration:
+   Switch# show vlan
+   Switch# show interfaces switchport
+
+
+   -----------------------------------------------------------------
+LANS using GNS3 and subnetting
+
+3. Router Configuration:
+   Router> enable
+   Router# configure terminal
+   Router(config)# interface interface_type interface_number
+   Router(config-if)# ip address IP_Address Subnet_Mask
+   Router(config-if)# no shutdown
+   Router(config-if)# exit
+
+4. Interconnect Routers:
+   (Configure IP addresses on serial interfaces or appropriate interfaces.)
+
+5. Switch Configuration:
+   Switch> enable
+   Switch# configure terminal
+   Switch(config)# interface vlan 1
+   Switch(config-if)# ip address IP_Address Subnet_Mask
+   Switch(config-if)# no shutdown
+   Switch(config-if)# exit
+
+6. LAN Configuration:
+   (Connect end devices to switches and configure IP addresses on end devices within their respective subnets.)
+
+7. Explore Subnetting Options:
+   (Decide on a subnetting scheme and implement subnetting on routers and switches.)
+   Router(config)# interface interface_type interface_number
+   Router(config-if)# ip address IP_Address Subnet_Mask
+   Router(config-if)# no shutdown
+   Router(config-if)# exit
+---------------------------------------------------------------------------
+
+
+GNS3 LAN config
+
+
+RouterA Configuration:
+
+1. Configure the LAN Interface:
+   RouterA> enable
+   RouterA# configure terminal
+   RouterA(config)# interface gigabitEthernet0/0
+   RouterA(config-if)# ip address 192.168.1.1 255.255.255.0
+   RouterA(config-if)# no shutdown
+   RouterA(config-if)# exit
+
+2. Configure a Static Route to Router B's LAN:
+   RouterA(config)# ip route 192.168.2.0 255.255.255.0 192.168.1.2
+
+RouterB Configuration:
+
+1. Configure the LAN Interface:
+   RouterB> enable
+   RouterB# configure terminal
+   RouterB(config)# interface gigabitEthernet0/0
+   RouterB(config-if)# ip address 192.168.2.1 255.255.255.0
+   RouterB(config-if)# no shutdown
+   RouterB(config-if)# exit
+
+2. Configure a Static Route to Router A's LAN:
+   RouterB(config)# ip route 192.168.1.0 255.255.255.0 192.168.2.2
+
+
+---------------------------------------------------------------------------
+
+GNS3 OSPF
+
+
+R1 Configuration:
+
+R1# configure terminal
+R1(config)# interface fastEthernet 0/0
+R1(config-if)# ip address 192.168.1.1 255.255.255.0
+R1(config-if)# no shutdown
+R1(config-if)# exit
+
+R1(config)# interface serial 1/0
+R1(config-if)# ip address 192.168.4.1 255.255.255.0
+R1(config-if)# no shutdown
+R1(config-if)# exit
+
+R1(config)# interface serial 1/1
+R1(config-if)# ip address 192.168.5.1 255.255.255.0
+R1(config-if)# no shutdown
+R1(config-if)# exit
+
+R1(config)# router ospf 1
+R1(config-router)# network 192.168.1.0 0.0.0.255 area 0
+R1(config-router)# network 192.168.4.0 0.0.0.255 area 0
+R1(config-router)# network 192.168.5.0 0.0.0.255 area 0
+
+
+R2 Configuration:
+
+R2# configure terminal
+R2(config)# interface fastEthernet 0/0
+R2(config-if)# ip address 192.168.2.1 255.255.255.0
+R2(config-if)# no shutdown
+R2(config-if)# exit
+
+R2(config)# interface serial 1/0
+R2(config-if)# ip address 192.168.4.2 255.255.255.0
+R2(config-if)# no shutdown
+R2(config-if)# exit
+
+R2(config)# interface serial 1/1
+R2(config-if)# ip address 192.168.6.1 255.255.255.0
+R2(config-if)# no shutdown
+R2(config-if)# exit
+
+R2(config)# router ospf 1
+R2(config-router)# network 192.168.2.0 0.0.0.255 area 0
+R2(config-router)# network 192.168.4.0 0.0.0.255 area 0
+R2(config-router)# network 192.168.6.0 0.0.0.255 area 0
+
+
+R3 Configuration:
+
+R3# configure terminal
+R3(config)# interface fastEthernet 0/0
+R3(config-if)# ip address 192.168.3.1 255.255.255.0
+R3(config-if)# no shutdown
+R3(config-if)# exit
+
+R3(config)# interface serial 1/0
+R3(config-if)# ip address 192.168.5.2 255.255.255.0
+R3(config-if)# no shutdown
+R3(config-if)# exit
+
+R3(config)# interface serial 1/1
+R3(config-if)# ip address 192.168.6.2 255.255.255.0
+R3(config-if)# no shutdown
+R3(config-if)# exit
+
+R3(config)# router ospf 1
+R3(config-router)# network 192.168.3.0 0.0.0.255 area 0
+R3(config-router)# network 192.168.5.0 0.0.0.255 area 0
+R3(config-router)# network 192.168.6.0 0.0.0.255 area 0
+
+
+PC Configuration:
+
+PC1> ip 192.168.1.2/24 192.168.1.1
+PC2> ip 192.168.2.2/24 192.168.2.1
+PC3> ip 192.168.3.2/24 192.168.3.1
+
+Verify Network Connectivity:
+
+PC1> ping 192.168.2.2
+
+Verify OSPF Operation:
+
+R1# show ip ospf neighbors
+-------------------------------------------------------------------
+EIGRP
+
+R1 Configuration:
+
+R1# configure terminal
+R1(config)# interface fastEthernet 0/0
+R1(config-if)# ip address 192.168.1.1 255.255.255.0
+R1(config-if)# no shutdown
+R1(config-if)# exit
+
+R1(config)# interface serial 1/0
+R1(config-if)# ip address 192.168.4.1 255.255.255.0
+R1(config-if)# no shutdown
+R1(config-if)# exit
+
+R1(config)# interface serial 1/1
+R1(config-if)# ip address 192.168.5.1 255.255.255.0
+R1(config-if)# no shutdown
+R1(config-if)# exit
+
+R1# show ip interface brief
+
+R2 Configuration:
+
+R2# configure terminal
+R2(config)# interface fastEthernet 0/0
+R2(config-if)# ip address 192.168.2.1 255.255.255.0
+R2(config-if)# no shutdown
+R2(config-if)# exit
+
+R2(config)# interface serial 1/0
+R2(config-if)# ip address 192.168.4.2 255.255.255.0
+R2(config-if)# no shutdown
+R2(config-if)# exit
+
+R2(config)# interface serial 1/1
+R2(config-if)# ip address 192.168.6.1 255.255.255.0
+R2(config-if)# no shutdown
+R2(config-if)# exit
+
+R2# show ip interface brief
+
+R3 Configuration:
+
+R3# configure terminal
+R3(config)# interface fastEthernet 0/0
+R3(config-if)# ip address 192.168.3.1 255.255.255.0
+R3(config-if)# no shutdown
+R3(config-if)# exit
+
+R3(config)# interface serial 1/0
+R3(config-if)# ip address 192.168.5.2 255.255.255.0
+R3(config-if)# no shutdown
+R3(config-if)# exit
+
+R3(config)# interface serial 1/1
+R3(config-if)# ip address 192.168.6.2 255.255.255.0
+R3(config-if)# no shutdown
+R3(config-if)# exit
+
+R3# show ip interface brief
+
+PC Configuration:
+
+PC1> ip 192.168.1.2/24 192.168.1.1
+PC2> ip 192.168.2.2/24 192.168.2.1
+
+EIGRP Configuration:
+
+R1# configure terminal
+R1(config)# router eigrp 1
+R1(config-router)# network 192.168.1.0
+R1(config-router)# network 192.168.4.0
+R1(config-router)# network 192.168.5.0
+
+R2# configure terminal
+R2(config)# router eigrp 1
+R2(config-router)# network 192.168.2.0
+R2(config-router)# network 192.168.4.0
+R2(config-router)# network 192.168.6.0
+
+R3# configure terminal
+R3(config)# router eigrp 1
+R3(config-router)# network 192.168.3.0
+R3(config-router)# network 192.168.5.0
+R3(config-router)# network 192.168.6.0
+
+Verification:
+
+PC1> ping 192.168.2.2
+
+R1# show ip eigrp neighbors
+R1# show ip protocols
+R1# show ip route
+-------------------------------------------------
+
+   
